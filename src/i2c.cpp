@@ -44,8 +44,15 @@ void I2Cx_DMA_TX_IRQHandler(void)
   HAL_DMA_IRQHandler(I2Cx_COM::Instance().i2cx_point.hdmatx);
 }
 
+void I2Cx_COM::Error_Handler(){
+  /* Turn LED5 on */
+  BSP_LED_On(LED4);
+  while(1)
+  {
+  }
+}
 
-void I2Cx_COM::I2Cx_COM_INIT(void){
+void I2Cx_COM::InitHardware(void){
   /*##-1- Configure the I2C peripheral ######################################*/
   i2cx_point.Instance             = I2Cx;
 
@@ -85,20 +92,6 @@ void I2Cx_COM::ReadBytes( uint16_t DevAddress, uint16_t MemAddress, uint16_t Mem
   }
 }
 
-/**
-  * @brief  This function is executed in case of error occurrence.
-  * @param  None
-  * @retval None
-  */
-void Error_Handler(void)
-{
-  /* Turn LED5 on */
-  BSP_LED_On(LED5);
-  while(1)
-  {
-  }
-}
-
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *I2cHandle)
 {
   /* Turn LED4 on: Transfer in transmission process is correct */
@@ -129,7 +122,6 @@ void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *I2cHandle)
 /** @defgroup HAL_MSP_Private_Functions
   * @{
   */
-extern "C" {
 /**
   * @brief I2C MSP Initialization
   *        This function configures the hardware resources used in this example:
@@ -260,5 +252,4 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef *hi2c)
   /*##-4- Disable the NVIC for DMA ###########################################*/
   HAL_NVIC_DisableIRQ(I2Cx_DMA_TX_IRQn);
   HAL_NVIC_DisableIRQ(I2Cx_DMA_RX_IRQn);
-}
 }

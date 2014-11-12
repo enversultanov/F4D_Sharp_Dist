@@ -39,18 +39,16 @@
 
 /* Definition for I2Cx's DMA */
 #define I2Cx_TX_DMA_CHANNEL             DMA_CHANNEL_1
-#define I2Cx_TX_DMA_STREAM              DMA1_Stream6
+#define I2Cx_TX_DMA_STREAM              DMA1_Stream7
 #define I2Cx_RX_DMA_CHANNEL             DMA_CHANNEL_1
-#define I2Cx_RX_DMA_STREAM              DMA1_Stream5
+#define I2Cx_RX_DMA_STREAM              DMA1_Stream0
 
 /* Definition for I2Cx's NVIC */
-#define I2Cx_DMA_TX_IRQn                DMA1_Stream6_IRQn
-#define I2Cx_DMA_RX_IRQn                DMA1_Stream5_IRQn
-#define I2Cx_DMA_TX_IRQHandler          DMA1_Stream6_IRQHandler
-#define I2Cx_DMA_RX_IRQHandler          DMA1_Stream5_IRQHandler
+#define I2Cx_DMA_TX_IRQn                DMA1_Stream7_IRQn
+#define I2Cx_DMA_RX_IRQn                DMA1_Stream0_IRQn
+#define I2Cx_DMA_TX_IRQHandler          DMA1_Stream7_IRQHandler
+#define I2Cx_DMA_RX_IRQHandler          DMA1_Stream0_IRQHandler
 
-
-static void Error_Handler(void);
 
 /* Memory adress size define ------------------------------------------------ */
 #define I2C_MEMADD_SIZE_8BIT            ((uint32_t)0x00000001)
@@ -70,9 +68,12 @@ public:
 
   ~I2Cx_COM();
 
-  void I2Cx_COM_INIT(void);
+  void InitHardware(void);
+
+  void Error_Handler(void);
 
   void ReadBytes( uint16_t DevAddress, uint16_t MemAddress, uint16_t MemAddSize, uint8_t *pData, uint16_t Size );
+
   I2C_HandleTypeDef i2cx_point;
 
 private:

@@ -73,6 +73,7 @@ __initialize_hardware(void)
   // instruction to be executed in the main program.
   HAL_Init();
 
+  BSP_LED_Init(LED3);
   BSP_LED_Init(LED4);
   BSP_LED_Init(LED5);
   BSP_LED_Init(LED6);
