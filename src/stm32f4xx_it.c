@@ -38,7 +38,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f4xx_it.h"   
+#include "stm32f4xx_it.h"
+
+//I2C_HandleTypeDef I2cHandle;
 
 /** @addtogroup STM32F4xx_HAL_Examples
   * @{

@@ -37,6 +37,9 @@ void
 __initialize_hardware(void);
 
 void
+EXTILine0_Config(void);
+
+void
 configure_system_clock(void);
 
 // ----------------------------------------------------------------------------
@@ -70,10 +73,13 @@ __initialize_hardware(void)
   // instruction to be executed in the main program.
   HAL_Init();
 
+  BSP_LED_Init(LED4);
   BSP_LED_Init(LED5);
+  BSP_LED_Init(LED6);
 
   // Enable HSE Oscillator and activate PLL with HSE as source
   configure_system_clock();
+  void EXTILine0_Config(void);
 }
 
 // ----------------------------------------------------------------------------
@@ -136,6 +142,29 @@ configure_system_clock(void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
   HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5);
+}
+
+/**
+  * @brief  Configures EXTI Line0 (connected to PA0 pin) in interrupt mode
+  * @param  None
+  * @retval None
+  */
+void EXTILine0_Config(void)
+{
+  GPIO_InitTypeDef   GPIO_InitStructure;
+
+  /* Enable GPIOA clock */
+  __GPIOE_CLK_ENABLE();
+
+  /* Configure PA0 pin as input floating */
+  GPIO_InitStructure.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStructure.Pull = GPIO_NOPULL;
+  GPIO_InitStructure.Pin = GPIO_PIN_0;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+  /* Enable and set EXTI Line0 Interrupt to the lowest priority */
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 0x0F, 0x0F);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 }
 
 // ----------------------------------------------------------------------------

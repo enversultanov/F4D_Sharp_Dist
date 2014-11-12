@@ -39,12 +39,12 @@
 #ifndef __STM32F4xx_IT_H
 #define __STM32F4xx_IT_H
 
-//#include "main.hpp"
 #include "stm32f4_discovery.h"
+
 
 #ifdef __cplusplus
  extern "C" {
-#endif 
+#endif
 
 /* Includes ------------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
@@ -62,6 +62,7 @@ void DebugMon_Handler(void);
 void PendSV_Handler(void);
 void SysTick_Handler(void);
 void EXTI0_IRQHandler(void);
+
 //void USARTx_DMA_RX_IRQHandler(void);
 //void USARTx_DMA_TX_IRQHandler(void);
 

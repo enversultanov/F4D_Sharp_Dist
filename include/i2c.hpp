@@ -22,6 +22,7 @@
 
 #define I2Cx                             I2C1
 #define I2Cx_CLK_ENABLE()                __I2C1_CLK_ENABLE()
+#define DMAx_CLK_ENABLE()                __DMA1_CLK_ENABLE()
 #define I2Cx_SDA_GPIO_CLK_ENABLE()       __GPIOB_CLK_ENABLE()
 #define I2Cx_SCL_GPIO_CLK_ENABLE()       __GPIOB_CLK_ENABLE()
 
@@ -36,46 +37,46 @@
 #define I2Cx_SDA_GPIO_PORT              GPIOB
 #define I2Cx_SDA_AF                     GPIO_AF4_I2C1
 
-/* Exported macro ------------------------------------------------------------*/
-#define COUNTOF(__BUFFER__)   (sizeof(__BUFFER__) / sizeof(*(__BUFFER__)))
-/* Exported functions ------------------------------------------------------- */
+/* Definition for I2Cx's DMA */
+#define I2Cx_TX_DMA_CHANNEL             DMA_CHANNEL_1
+#define I2Cx_TX_DMA_STREAM              DMA1_Stream6
+#define I2Cx_RX_DMA_CHANNEL             DMA_CHANNEL_1
+#define I2Cx_RX_DMA_STREAM              DMA1_Stream5
+
+/* Definition for I2Cx's NVIC */
+#define I2Cx_DMA_TX_IRQn                DMA1_Stream6_IRQn
+#define I2Cx_DMA_RX_IRQn                DMA1_Stream5_IRQn
+#define I2Cx_DMA_TX_IRQHandler          DMA1_Stream6_IRQHandler
+#define I2Cx_DMA_RX_IRQHandler          DMA1_Stream5_IRQHandler
+
+
 static void Error_Handler(void);
 
 /* Memory adress size define ------------------------------------------------ */
 #define I2C_MEMADD_SIZE_8BIT            ((uint32_t)0x00000001)
 #define I2C_MEMADD_SIZE_16BIT           ((uint32_t)0x00000010)
 
-// 1000ms default read timeout (modify with "I2Cdev::readTimeout = [ms];")
-#define READ_TIMEOUT     1000
-#define WRITE_TIMEOUT     1000
+extern "C" {
+  void I2Cx_DMA_RX_IRQHandler(void);
+  void I2Cx_DMA_TX_IRQHandler(void);
+}
 
 /* I2C handler declaration */
 extern I2C_HandleTypeDef I2cHandle;
 
-class I2Cdev {
-    public:
-        I2Cdev();
+class I2Cx_COM {
+public:
+  static I2Cx_COM& Instance();
 
-        void I2C_Init(void);
+  ~I2Cx_COM();
 
-        static int8_t readBit(uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint8_t *data, uint16_t timeout=READ_TIMEOUT);
-        static int8_t readBitW(uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint16_t *data, uint16_t timeout=READ_TIMEOUT);
-        static int8_t readBits(uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint8_t *data, uint16_t timeout=READ_TIMEOUT);
-        static int8_t readBitsW(uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint16_t *data, uint16_t timeout=READ_TIMEOUT);
-        static int8_t readByte(uint8_t devAddr, uint8_t regAddr, uint8_t *data, uint16_t timeout=READ_TIMEOUT);
-        static int8_t readWord(uint8_t devAddr, uint8_t regAddr, uint16_t *data, uint16_t timeout=READ_TIMEOUT);
-        static int8_t readBytes(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8_t *data, uint16_t timeout=READ_TIMEOUT);
-        static int8_t readWords(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint16_t *data, uint16_t timeout=READ_TIMEOUT);
+  void I2Cx_COM_INIT(void);
 
-        static bool writeBit(uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint8_t data);
-        static bool writeBitW(uint8_t devAddr, uint8_t regAddr, uint8_t bitNum, uint16_t data);
-        static bool writeBits(uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint8_t data);
-        static bool writeBitsW(uint8_t devAddr, uint8_t regAddr, uint8_t bitStart, uint8_t length, uint16_t data);
-        static bool writeByte(uint8_t devAddr, uint8_t regAddr, uint8_t data);
-        static bool writeWord(uint8_t devAddr, uint8_t regAddr, uint16_t data);
-        static bool writeBytes(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8_t *data);
-        static bool writeWords(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint16_t *data);
+  void ReadBytes( uint16_t DevAddress, uint16_t MemAddress, uint16_t MemAddSize, uint8_t *pData, uint16_t Size );
+  I2C_HandleTypeDef i2cx_point;
 
+private:
+  I2Cx_COM();
 };
 
 #endif /* I2C_HPP_ */
